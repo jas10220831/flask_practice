@@ -1,16 +1,18 @@
 from flask import Flask, request
 from decouple import config
 
+
+
 from pprint import pprint
 
-from send_message import send
+from send_message import *
+from news_summarize import * 
+
 
 app = Flask(__name__)
 TELEGRAM_TOKEN = config('TELEGRAM_TOKEN')
 WEBHOOK_URL = config('WEBHOOK_URL')
 bot_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
-
-
 
 
 
@@ -21,9 +23,13 @@ def hello_world():
         response = request.get_json()
         chat_id = response['message']['chat']['id']
         message = request.get_json()['message']['text']
+        
         if message == '안녕':
-            print('get_greeting')
-            send("안녕안녕", chat_id)
+           greeting(chat_id)
+        else:
+            article_list = make_articles(message)
+            send_title(article_list, chat_id)
+
         return '', 200
     else:
         return 'hello worlasdfd' 
