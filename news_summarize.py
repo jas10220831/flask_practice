@@ -52,10 +52,11 @@ def summarize_article(content):
     return article.text
 
 # article_list = make_articles('한화이글스')
-# print(article_list)
-# # word = ''
+# # print(article_list)
+# word = ''
 # for i in range(len(article_list)):
 #   word += str(i+1)+'번' + article_list[i]['news_title'] + '\n'
 
 # print(word)
 
+# print(summarize_article(article_list[2]))

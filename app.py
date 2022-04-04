@@ -1,5 +1,8 @@
-from distutils.debug import DEBUG
-from flask import Flask, redirect, render_template, request, url_for
+from flask import (Flask,
+     redirect, render_template, request, url_for,
+     jsonify
+     
+     )
 from decouple import config
 
 
@@ -36,12 +39,18 @@ def hello_world():
 
 @app.route('/news', methods=['GET', 'POST'])
 def news():
-    if request.method == 'POST':
-
-        search_word = request.form['message']
-        articles = make_articles(search_word)
-        print(articles)
-        return redirect('/')
+    # if request.method == 'POST':
+    #     search_word = request.form['search_word']
+    #     articles = make_articles(search_word)
+    #     # print(articles)
+    #     return jsonify(articles)
+    # else:
+    #     print('get요청 들어옴')
+    #     return 
+    search_word = request.args.get('search_word', 'None', type=str)
+    articles = make_articles(search_word)
+    print(articles[0])
+    return jsonify(result=articles[0]['news_title'])
 
 if __name__ == '__main__':
     app.run(debug=True, host="localhost", port = 5000)
