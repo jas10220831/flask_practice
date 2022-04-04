@@ -28,7 +28,8 @@ def make_articles(text):
     if news_title != None:
       check_list.append({
         'news_title' : news_title, 
-        'article_url' : href
+        'article_url' : href,
+        # 'img_url' : img_url,
         })
     elif len(check_list) > 5:
       break 
@@ -50,10 +51,12 @@ def summarize_article(content):
   else:
     return article.text
 
-article_list = make_articles('한화이글스')
-word = ''
-for i in range(len(article_list)):
-  word += str(i+1)+'번' + article_list[i]['news_title'] + '\n'
+# article_list = make_articles('한화이글스')
+# # print(article_list)
+# word = ''
+# for i in range(len(article_list)):
+#   word += str(i+1)+'번' + article_list[i]['news_title'] + '\n'
 
-print(word)
+# print(word)
 
+# print(summarize_article(article_list[2]))
