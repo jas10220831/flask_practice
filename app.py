@@ -37,8 +37,8 @@ def hello_world():
     else:
         return render_template('index.html')
 
-@app.route('/news', methods=['GET', 'POST'])
-def news():
+@app.route('/news_list', methods=['GET', 'POST'])
+def news_list():
     # if request.method == 'POST':
     #     search_word = request.form['search_word']
     #     articles = make_articles(search_word)
@@ -49,8 +49,7 @@ def news():
     #     return 
     search_word = request.args.get('search_word', 'None', type=str)
     articles = make_articles(search_word)
-    print(articles[0])
-    return jsonify(result=articles[0]['news_title'])
+    return jsonify(result=articles)
 
 if __name__ == '__main__':
     app.run(debug=True, host="localhost", port = 5000)

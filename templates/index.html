@@ -148,12 +148,13 @@
           <div class="row featurette">
             <div class="col-md-7 order-md-2">
               <h2 class="featurette-heading">뉴스<span class="text-muted"></h2>
-              <form clas="get_news" action="{{ url_for('news') }}" method="post">
+              <form class="get_news" action="{{ url_for('news_list') }}" method="post">
                 <input name="search_word" class="search_word" id="message" type="text">
                 <a href=# id=search_news><button class="search_news">검색</button></a>
               </form>
-              <div id="collected_article">
-
+              <div class="col-md-5">
+                <ul id="collected_article">
+                </ul>
               </div>
               
             </div>
@@ -218,10 +219,13 @@
 <script type=text/javascript>
   $(function() {
     $('a#search_news').bind('click', function(){
-      $.getJSON($SCRIPT_ROOT + '/news', {
+      $.getJSON($SCRIPT_ROOT + '/news_list', {
         search_word: $('input[name="search_word"]').val()
       }, function(data){
-        $("#collected_article").text(data.result);
+        for (let i = 0; i < 5; i++){
+          console.log(data.result[i])
+          $("<li>").text(data.result[i]["news_title"]).appendTo("#collected_article")
+        };
       });
       return false;
     });
