@@ -219,13 +219,15 @@
 <script type=text/javascript>
   $(function() {
     $('a#search_news').bind('click', function(){
+      $("#collected_article").html("");
       $.getJSON($SCRIPT_ROOT + '/news_list', {
         search_word: $('input[name="search_word"]').val()
       }, function(data){
         for (let i = 0; i < 5; i++){
           console.log(data.result[i])
-          $("<li>").text(data.result[i]["news_title"]).appendTo("#collected_article")
-        };
+          $("<li>").text(data.result[i]['news_title']).appendTo("#collected_article")
+        }
+        ;
       });
       return false;
     });
