@@ -225,7 +225,13 @@
       }, function(data){
         for (let i = 0; i < 5; i++){
           console.log(data.result[i])
-          $("<li>").text(data.result[i]['news_title']).appendTo("#collected_article")
+          $("<li>")
+            .attr("id","article_"+i)
+            .appendTo("#collected_article")
+          $("<a>")
+            .attr("href", data.result[i]["article_url"])
+            .text(data.result[i]["news_title"])
+            .appendTo("#article_"+i)
         }
         ;
       });
