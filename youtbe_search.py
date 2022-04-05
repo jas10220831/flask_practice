@@ -51,7 +51,7 @@ def search_yotube(search_word):
       'id' : 'yzrze5XTlCw',
       'url' : f"https://www.youtube.com/watch?v=yzrze5XTlCw" ,
       'thumbnail' : 'https://i1.ytimg.com/vi/yzrze5XTlCw/mqdefault.jpg',
-      'duration' : '',
+      'duration' : 'sdfsdff',
       'title' : '유튜브 동영상 제목이 들어감',
     })
   return videos

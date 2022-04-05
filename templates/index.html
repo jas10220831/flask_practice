@@ -248,7 +248,8 @@
       $("#collected_youtube").html("");
       $.getJSON($SCRIPT_ROOT + '/youtube_search', {
         search_word: $('input[name="youtube_word"]').val()
-      }, function(data){
+      },function(data){
+        localStorage.setItem("youtubeInfo", JSON.stringify(data.videos))
         for (let i = 0; i < 5; i++){
           $("<div>")
             .attr("id", "youtube_"+i)
