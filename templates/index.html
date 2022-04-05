@@ -11,7 +11,8 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/carousel/">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -170,13 +171,11 @@
             <div class="col-12">
               <h2 class="mt-4">유튜브 검색<span class="text-muted"></h2>
               <form class="get_news mb-4" action="{{ url_for('youtube_search') }}" method="post">
-                <input name="youtube_word" class="youtube_word" id="message" type="text">
-                <a href=# id=search_youtube><button class="search_youtube">검색</button></a>
-              </form>
+                <input name="youtube_word" class="youtube_word" id="youtube_word" type="text">
+                <a href=# id=search_youtube><button class="search_youtube">검색</button></a>              </form>
             </div>
+
             <div id="collected_youtube" class="col d-flex justify-center">
-
-
             </div>
             
           </div>
@@ -251,7 +250,6 @@
         search_word: $('input[name="youtube_word"]').val()
       }, function(data){
         for (let i = 0; i < 5; i++){
-          console.log(data.videos[i]["thumbnail"])
           $("<div>")
             .attr("id", "youtube_"+i)
             .attr("class", "card m-3")
@@ -270,15 +268,21 @@
               .text(data.videos[i]["title"])
               .appendTo("#youtube_card_"+i)
             $("<a>")
-              .attr("class", "btn btn-primary")
+              .attr("class", "btn btn-outline-danger")
+              .attr("id", "youtube_button_"+i)
               .attr("href", data.videos[i]["url"])
-              .text("보러가기")
               .appendTo("#youtube_card_"+i)
+              $("<i>")
+                .attr("class", "bi bi-youtube")
+                .appendTo("#youtube_button_"+i)
             $("<a>")
-              .attr("class", "btn btn-danger m-2")
-              .attr("href", "url_for({{ 'youtube_send_telegram' }})")
-              .text("메신저")
+              .attr("class", "btn btn-outline-primary m-2")
+              .attr("href", "{{ url_for('youtube_send_telegram') }}")
+              .attr("id", "telegram_button_"+i)
               .appendTo("#youtube_card_"+i)
+              $("<i>")
+                .attr("class", "bi bi-telegram")
+                .appendTo("#telegram_button_"+i)
           }
           ;
       });

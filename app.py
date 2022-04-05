@@ -5,7 +5,7 @@ from flask import (Flask,
      )
 from decouple import config
 
-
+import requests
 from pprint import pprint
 
 from send_message import *
@@ -18,10 +18,13 @@ WEBHOOK_URL = config('WEBHOOK_URL')
 YOUTBUE_KEY = config('YOUTUBE_KEY')
 bot_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
 
-DEBUG = True
+# chat_response = requests.get(f'{bot_url}getUdpates').json()
+# chat_id = chat_response['result'][0]['message']['chat']['id']
+chat_id = ''
 
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
+    global chat_id
     # print(WEBHOOK_URL)
     if request.method == 'POST':
         response = request.get_json()
@@ -59,9 +62,10 @@ def youtube_search():
     else:
         return redirect(url_for('hello_world'))
 
-@app.route('/youtbe_send_telegram', methods=['POST'])
-def youtube_send_telegram():
-    pass
+@app.route('/youtbe_send_telegram/', methods=['GET'])
+def youtube_send_telegram(url):
+    print(url)
+    return redirect(url_for('hello_world'))
 
 if __name__ == '__main__':
     app.run(debug=True, host="localhost", port = 5000)
