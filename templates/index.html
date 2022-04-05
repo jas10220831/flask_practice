@@ -174,19 +174,10 @@
                 <a href=# id=search_youtube><button class="search_youtube">검색</button></a>
               </form>
             </div>
-            <div class="collected_youtube">
+            <div id="collected_youtube" class="col d-flex justify-center">
+
 
             </div>
-            {% for video in viedos %}
-            <div class="col card" style="width: 14rem;">
-              <img src="{{ video.thumbnail }}" class="card-img-top mt-2" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">{{ video.title }}</h5>
-                <p class="card-text"></p>
-                <a href="{{ video.url }}" class="btn btn-primary">보러가기</a>
-              </div>
-            </div>
-            {% endfor %}
             
           </div>
         </section>
@@ -260,9 +251,36 @@
         search_word: $('input[name="youtube_word"]').val()
       }, function(data){
         for (let i = 0; i < 5; i++){
-          cosole.log(data)
-        }
-        ;
+          console.log(data.videos[i]["thumbnail"])
+          $("<div>")
+            .attr("id", "youtube_"+i)
+            .attr("class", "card m-3")
+            .attr("style", "width: 14rem")
+            .appendTo("#collected_youtube")
+          $("<img>")
+            .attr("src", data.videos[i]["thumbnail"])
+            .attr("class", "card-img-top m-1")
+            .appendTo("#youtube_"+i)
+          $("<div>")
+            .attr("class", "card-body")
+            .attr("id", "youtube_card_"+i)
+            .appendTo("#youtube_"+i)
+            $("<h5>")
+              .attr("class", "card-title")
+              .text(data.videos[i]["title"])
+              .appendTo("#youtube_card_"+i)
+            $("<a>")
+              .attr("class", "btn btn-primary")
+              .attr("href", data.videos[i]["url"])
+              .text("보러가기")
+              .appendTo("#youtube_card_"+i)
+            $("<a>")
+              .attr("class", "btn btn-danger m-2")
+              .attr("href", "url_for({{ 'youtube_send_telegram' }})")
+              .text("메신저")
+              .appendTo("#youtube_card_"+i)
+          }
+          ;
       });
       return false;
     });

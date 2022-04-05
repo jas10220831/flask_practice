@@ -40,14 +40,6 @@ def hello_world():
 
 @app.route('/news_list', methods=['GET', 'POST'])
 def news_list():
-    # if request.method == 'POST':
-    #     search_word = request.form['search_word']
-    #     articles = make_articles(search_word)
-    #     # print(articles)
-    #     return jsonify(articles)
-    # else:
-    #     print('get요청 들어옴')
-    #     return 
     search_word = request.args.get('search_word', 'None', type=str)
     articles = make_articles(search_word)
     return jsonify(result=articles)
@@ -63,9 +55,13 @@ def youtube_search():
     print(search_word)
     if search_word:
         videos = search_yotube(search_word)
-        return render_template('index.html', viedos=videos)
+        return jsonify(videos=videos)
     else:
         return redirect(url_for('hello_world'))
+
+@app.route('/youtbe_send_telegram', methods=['POST'])
+def youtube_send_telegram():
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True, host="localhost", port = 5000)
