@@ -244,7 +244,8 @@
 
   // 유튜브 검색 기능
   $(function() {
-    $('a#search_youtube').bind('click', function(){
+    $('a#search_youtube').bind('click', function(event){
+      event.preventDefault()
       $("#collected_youtube").html("");
       $.getJSON($SCRIPT_ROOT + '/youtube_search', {
         search_word: $('input[name="youtube_word"]').val()
@@ -253,7 +254,7 @@
         for (let i = 0; i < 5; i++){
           $("<div>")
             .attr("id", "youtube_"+i)
-            .attr("class", "card m-3")
+            .attr("class", "card col-2 m-3")
             .attr("style", "width: 14rem")
             .appendTo("#collected_youtube")
           $("<img>")
@@ -278,8 +279,8 @@
                 .appendTo("#youtube_button_"+i)
             $("<a>")
               .attr("class", "btn btn-outline-primary m-2")
-              .attr("href", "{{ url_for('youtube_send_telegram') }}")
               .attr("id", "telegram_button_"+i)
+              .attr("onclick", "sendMessage(this)")
               .appendTo("#youtube_card_"+i)
               $("<i>")
                 .attr("class", "bi bi-telegram")
@@ -291,6 +292,11 @@
     });
   });
 
+  function sendMessage() {
+    const idNumb = event.srcElement.id
+    const idxNumb = idNumb.split("")[16]
+    console.log(JSON.parse(localStorage.getItem("youtubeInfo"))[idxNumb]["url"])
+  }
 
 </script>
 

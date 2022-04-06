@@ -55,7 +55,6 @@ def news_summarize():
 @app.route('/youtube_search', methods=['GET', 'POST'])
 def youtube_search():
     search_word = request.args.get('search_word', 'None', type=str)
-    print(search_word)
     if search_word:
         videos = search_yotube(search_word)
         return jsonify(videos=videos)
@@ -63,8 +62,8 @@ def youtube_search():
         return redirect(url_for('hello_world'))
 
 @app.route('/youtbe_send_telegram/', methods=['GET'])
-def youtube_send_telegram(url):
-    print(url)
+def youtube_send_telegram():
+    # localstorage에 저장된 데이터를 받고 전달
     return redirect(url_for('hello_world'))
 
 if __name__ == '__main__':
