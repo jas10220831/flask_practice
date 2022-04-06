@@ -268,10 +268,12 @@
 
   $(function(){
     $('a#search_stock').bind('click', function(){
+      $("#collected_stock").html("");
       $.getJSON($SCRIPT_ROOT + '/stock_search', {
         search_word: $('input[name="stock_word"]').val()
       }, function(data) {
       });
+      return false
     });
   });
 </script>

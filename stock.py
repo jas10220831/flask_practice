@@ -33,7 +33,26 @@ def search_stock(search_word):
     # target_numb = '005930'
 
     df = stock.get_market_ohlcv("20180810", today_date, target_numb, "d")
+    # 구분값 
+    # print(df.columns)
+    # # 날짜 정보 
+    # print(df.index[len(df)-7:len(df)])
+    # print(df.values[len(df)-7:len(df)][0])
 
-    return df.tail(3)
+    # 오늘부터 영업일 7일 전까지의 종목 거래 정보 
+    print(df[-7:-1])
+    stock_info = []
+    for i in range(7):
+        one_day = {
+            '날짜' : df.index[len(df)-1-i].strftime("%Y/%m/%d"),
+            '시가' : df.values[len(df)-1-i][0],
+            '고가' : df.values[len(df)-1-i][1],
+            '저가' : df.values[len(df)-1-i][2],
+            '종가' : df.values[len(df)-1-i][3],
+            '거래량' : df.values[len(df)-1-i][4],
+        }
+        stock_info.append(one_day)
+    print(stock_info)
+    return stock_info
 
-
+search_stock("삼성전자")

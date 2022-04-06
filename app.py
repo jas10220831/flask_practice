@@ -74,8 +74,9 @@ def youtbe_send_telegram():
 def stock_search():
     search_word = request.args.get('search_word', 'None', type=str)
     response = search_stock(search_word)
-    print(response)
-    return '<h1>Hello Wolrd</h1>'
+    if response :
+        print(response)
+        return '<h1>Hello Wolrd</h1>'
 
 
 if __name__ == '__main__':
