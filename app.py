@@ -1,3 +1,4 @@
+from re import search
 from flask import (Flask,
      redirect, render_template, request, url_for,
      jsonify, json
@@ -11,6 +12,8 @@ from pprint import pprint
 from send_message import *
 from news_summarize import * 
 from youtbe_search import *
+from stock import *
+
 
 app = Flask(__name__)
 TELEGRAM_TOKEN = config('TELEGRAM_TOKEN')
@@ -47,12 +50,12 @@ def news_list():
 
 @app.route('/news_summarize')
 def news_summarize():
-    print(request.args)
     return '뉴스 요약보여주기'
 
 @app.route('/youtube_search', methods=['GET', 'POST'])
 def youtube_search():
     search_word = request.args.get('search_word', 'None', type=str)
+    print(search_word)
     if search_word:
         videos = search_yotube(search_word)
         return jsonify(videos=videos)
@@ -62,11 +65,18 @@ def youtube_search():
 @app.route('/youtbe_send_telegram', methods=['GET', 'POST'])
 def youtbe_send_telegram():
     # localstorage에 저장된 데이터를 받고 전달
-    response = request.get_json()
     # chat_id = response['message']['chat']['id']
     send_url = request.json['url']
     send(send_url, chat_id)
     return '데이터 받음'
+
+@app.route('/stock_search', methods=['GET', 'POST'])
+def stock_search():
+    search_word = request.args.get('search_word', 'None', type=str)
+    response = search_stock(search_word)
+    print(response)
+    return '<h1>Hello Wolrd</h1>'
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="localhost", port = 5000)

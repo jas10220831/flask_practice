@@ -61,56 +61,6 @@
 
     <main>
 
-      <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
-
-            <div class="container">
-              <div class="carousel-caption text-start">
-                <h1>Example headline.</h1>
-                <p>Some representative placeholder content for the first slide of the carousel.</p>
-                <p><a class="btn btn-lg btn-primary" href="#">Sign up today</a></p>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
-
-            <div class="container">
-              <div class="carousel-caption">
-                <h1>Another example headline.</h1>
-                <p>Some representative placeholder content for the second slide of the carousel.</p>
-                <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
-
-            <div class="container">
-              <div class="carousel-caption text-end">
-                <h1>One more for good measure.</h1>
-                <p>Some representative placeholder content for the third slide of this carousel.</p>
-                <p><a class="btn btn-lg btn-primary" href="#">Browse gallery</a></p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
 
 
       <div class="container marketing">
@@ -143,15 +93,15 @@
 
         <!-- START THE FEATURETTES -->
         
-        <hr>
+        <hr class="featurette-divider">
         
         <section id="news">
           <div class="row featurette align-items-center">
             <div class="col-3">
-              <h2>뉴스<span class="text-muted"></h2>
+              <h2 class="featurette-heading mt-4">뉴스<span class="text-muted"></h2>
               <form class="get_news" action="{{ url_for('news_list') }}" method="post">
                 <input name="search_word" class="search_word" id="message" type="text">
-                <a href=# id=search_news><button class="search_news">검색</button></a>
+                <a href=# id="search_news"><button class="search_news">검색</button></a>
               </form>
             </div>
             <div class="col" >
@@ -165,14 +115,15 @@
           </div>
         </section>
 
-        <hr>
+        <hr class="featurette-divider">
         <section id="youtube">
           <div class="row featurette">
             <div class="col-12">
-              <h2 class="mt-4">유튜브 검색<span class="text-muted"></h2>
+              <h2 class="featurette-heading mt-4">유튜브 검색<span class="text-muted"></h2>
               <form class="get_news mb-4" action="{{ url_for('youtube_search') }}" method="post">
                 <input name="youtube_word" class="youtube_word" id="youtube_word" type="text">
-                <a href=# id=search_youtube><button class="search_youtube">검색</button></a>              </form>
+                <a href=# id=search_youtube><button class="search_youtube">검색</button></a>              
+              </form>
             </div>
 
             <div id="collected_youtube" class="col d-flex justify-center">
@@ -185,14 +136,17 @@
 
         <section id="stock">
           <div class="row featurette">
-            <div class="col-md-7">
-              <h2 class="featurette-heading">주식검색기능</h2>
-              <p class="lead">주식검색기능</p>
+            <div class="col-12">
+              <h2 class="featurette-heading mt-4">주식검색<span class="text-muted"></h2>
+              <form class="get_news mb-4" action="{{ url_for('stock_search') }}" method="post">
+                <input name="stock_word" class="stock_word" id="stock_word" type="text">
+                <a href=# id=search_stock><button class="search_stock">검색</button></a>              
+              </form>
             </div>
-            <div class="col-md-5">
-              <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
 
+            <div id="collected_stock" class="col d-flex justify-center">
             </div>
+            
           </div>
         </section>
 
@@ -310,8 +264,16 @@
       dataType:'json'
     });    
 
-  }
+  };
 
+  $(function(){
+    $('a#search_stock').bind('click', function(){
+      $.getJSON($SCRIPT_ROOT + '/stock_search', {
+        search_word: $('input[name="stock_word"]').val()
+      }, function(data) {
+      });
+    });
+  });
 </script>
 
 </html>
