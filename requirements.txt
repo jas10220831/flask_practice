@@ -4,6 +4,8 @@ charset-normalizer==2.0.12
 click==8.1.1
 colorama==0.4.4
 cssselect==1.1.0
+DateTime==4.4
+Deprecated==1.2.13
 feedfinder2==0.0.4
 feedparser==6.0.8
 filelock==3.6.0
@@ -20,9 +22,12 @@ MarkupSafe==2.1.1
 newspaper3k==0.2.8
 nltk==3.7
 numpy==1.22.3
+pandas==1.4.2
 Pillow==9.0.1
+pykrx==1.0.32
 python-dateutil==2.8.2
 python-decouple==3.6
+pytz==2022.1
 PyYAML==6.0
 regex==2022.3.15
 requests==2.27.1
@@ -37,4 +42,7 @@ tldextract==3.2.0
 tqdm==4.63.1
 urllib3==1.26.9
 Werkzeug==2.1.0
+wrapt==1.14.0
+xlrd==2.0.1
 zipp==3.7.0
+zope.interface==5.4.0
