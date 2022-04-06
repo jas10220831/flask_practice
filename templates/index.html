@@ -27,6 +27,10 @@
           font-size: 3.5rem;
         }
       }
+
+      table, th, td {
+        border:1px solid black;
+      }
     </style>
 
     
@@ -144,7 +148,33 @@
               </form>
             </div>
 
-            <div id="collected_stock" class="col d-flex justify-center">
+            <div  class="col d-flex justify-center">
+              <table id="collected_stock" style="width:100%">
+                <tr>
+                  <th>Company</th>
+                  <th>Contact</th>
+                  <th>Country</th>
+                  <th>Company</th>
+                  <th>Contact</th>
+                  <th>Country</th>
+                </tr>
+                <tr>
+                  <td>Alfreds Futterkiste</td>
+                  <td>Maria Anders</td>
+                  <td>Germany</td>
+                  <td>Alfreds Futterkiste</td>
+                  <td>Maria Anders</td>
+                  <td>Germany</td>
+                </tr>
+                <tr>
+                  <td>Centro comercial Moctezuma</td>
+                  <td>Francisco Chang</td>
+                  <td>Mexico</td>
+                  <td>Centro comercial Moctezuma</td>
+                  <td>Francisco Chang</td>
+                  <td>Mexico</td>
+                </tr>
+              </table>
             </div>
             
           </div>
@@ -272,6 +302,50 @@
       $.getJSON($SCRIPT_ROOT + '/stock_search', {
         search_word: $('input[name="stock_word"]').val()
       }, function(data) {
+        $("<tr>")
+          .attr("id", "table_header")
+          .appendTo("#collected_stock")
+          $("<th>")
+            .text("날짜")
+            .appendTo("#table_header")
+          $("<th>")
+            .text("시가")
+            .appendTo("#table_header")
+          $("<th>")
+            .text("고가")
+            .appendTo("#table_header")
+          $("<th>")
+            .text("저가")
+            .appendTo("#table_header")
+          $("<th>")
+            .text("종가")
+            .appendTo("#table_header")
+          $("<th>")
+            .text("거래량")
+            .appendTo("#table_header")
+        for (let i = 0; i < 7; i++) {
+          $("<tr>")
+            .attr("id", "stock_value_"+i)
+            .appendTo("#collected_stock")
+            $("<td>")
+              .text(data.values[i]["날짜"])
+              .appendTo("#stock_value_"+i)
+            $("<td>")
+              .text(data.values[i]["시가"])
+              .appendTo("#stock_value_"+i)
+            $("<td>")
+              .text(data.values[i]["고가"])
+              .appendTo("#stock_value_"+i)
+            $("<td>")
+              .text(data.values[i]["저가"])
+              .appendTo("#stock_value_"+i)
+            $("<td>")
+              .text(data.values[i]["종가"])
+              .appendTo("#stock_value_"+i)
+            $("<td>")
+              .text(data.values[i]["거래량"])
+              .appendTo("#stock_value_"+i)
+        }
       });
       return false
     });
