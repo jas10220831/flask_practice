@@ -18,8 +18,6 @@ WEBHOOK_URL = config('WEBHOOK_URL')
 YOUTBUE_KEY = config('YOUTUBE_KEY')
 bot_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
 
-# chat_response = requests.get(f'{bot_url}getUdpates').json()
-# chat_id = chat_response['result'][0]['message']['chat']['id']
 chat_id = ''
 
 @app.route('/', methods=['GET', 'POST'])
@@ -61,10 +59,14 @@ def youtube_search():
     else:
         return redirect(url_for('hello_world'))
 
-@app.route('/youtbe_send_telegram/', methods=['GET'])
-def youtube_send_telegram():
+@app.route('/youtbe_send_telegram', methods=['GET', 'POST'])
+def youtbe_send_telegram():
     # localstorage에 저장된 데이터를 받고 전달
-    return redirect(url_for('hello_world'))
+    response = request.get_json()
+    # chat_id = response['message']['chat']['id']
+    send_url = request.json['url']
+    send(send_url, chat_id)
+    return '데이터 받음'
 
 if __name__ == '__main__':
     app.run(debug=True, host="localhost", port = 5000)
