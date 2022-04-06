@@ -76,7 +76,8 @@ def stock_search():
     response = search_stock(search_word)
     if response :
         print(response)
-        return '<h1>Hello Wolrd</h1>'
+        
+        return jsonify(values=response)
 
 
 if __name__ == '__main__':
