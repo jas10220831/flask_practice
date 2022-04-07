@@ -70,9 +70,11 @@
       <div class="container marketing">
 
         <!-- Three columns of text below the carousel -->
-        <div class="row">
+        <div class="row mt-5">
           <div class="col-lg-4">
-            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false">
+              <title>Placeholder</title>
+              <rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
 
             <h2>뉴스</h2>
             <p>검색어를 입력하면 네이버 뉴스에서 관련 기사를 검색하고 요약하는 기능 제공</p>
@@ -108,11 +110,9 @@
                 <a href=# id="search_news"><button class="search_news">검색</button></a>
               </form>
             </div>
-            <div class="col" >
-              <ul id="collected_article">
-              </ul>
+            <div id="collected_article" class="col d-flex justify-center" >
+
             </div>
-              
             
             <!-- <div class="col-md-5 order-md-1">
               <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>  -->
@@ -123,7 +123,7 @@
         <section id="youtube">
           <div class="row featurette">
             <div class="col-12">
-              <h2 class="featurette-heading mt-4">유튜브 검색<span class="text-muted"></h2>
+              <h2 class="featurette-heading mt-4">유튜브<span class="text-muted"></h2>
               <form class="get_news mb-4" action="{{ url_for('youtube_search') }}" method="post">
                 <input name="youtube_word" class="youtube_word" id="youtube_word" type="text">
                 <a href=# id=search_youtube><button class="search_youtube">검색</button></a>              
@@ -141,7 +141,7 @@
         <section id="stock">
           <div class="row featurette">
             <div class="col-12">
-              <h2 class="featurette-heading mt-4">주식검색<span class="text-muted"></h2>
+              <h2 class="featurette-heading mt-4">주식<span class="text-muted"></h2>
               <form class="get_news mb-4" action="{{ url_for('stock_search') }}" method="post">
                 <input name="stock_word" class="stock_word" id="stock_word" type="text">
                 <a href=# id=search_stock><button class="search_stock">검색</button></a>              
@@ -150,31 +150,9 @@
 
             <div  class="col d-flex justify-center">
               <table id="collected_stock" style="width:100%">
-                <tr>
-                  <th>Company</th>
-                  <th>Contact</th>
-                  <th>Country</th>
-                  <th>Company</th>
-                  <th>Contact</th>
-                  <th>Country</th>
-                </tr>
-                <tr>
-                  <td>Alfreds Futterkiste</td>
-                  <td>Maria Anders</td>
-                  <td>Germany</td>
-                  <td>Alfreds Futterkiste</td>
-                  <td>Maria Anders</td>
-                  <td>Germany</td>
-                </tr>
-                <tr>
-                  <td>Centro comercial Moctezuma</td>
-                  <td>Francisco Chang</td>
-                  <td>Mexico</td>
-                  <td>Centro comercial Moctezuma</td>
-                  <td>Francisco Chang</td>
-                  <td>Mexico</td>
-                </tr>
               </table>
+              <ul id="stock_news">
+              </ul>
             </div>
             
           </div>
@@ -202,6 +180,7 @@
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 </script>
+
 <script type=text/javascript>
   $(function() {
     $('a#search_news').bind('click', function(){
@@ -209,22 +188,58 @@
       $.getJSON($SCRIPT_ROOT + '/news_list', {
         search_word: $('input[name="search_word"]').val()
       }, function(data){
+        localStorage.setItem("newsInfo", JSON.stringify(data.result))
         for (let i = 0; i < 5; i++){
-          // console.log(data.result[i])
-          $("<li>")
-            .attr("id","article_"+i)
+          $("<div>")
+            .attr("id", "news_"+i)
+            .attr("class", "card col-2 m-3")
+            .attr("style", "width: 14rem")
             .appendTo("#collected_article")
-          $("<a>")
-            // .attr("href", data.result[i]["article_url"])
-            .attr("href", "{{ url_for('news_summarize') }}?article_url"+data.result[i]["article_url"])
-            .text(data.result[i]["news_title"])
-            .appendTo("#article_"+i)
+            $("<img>")
+            .attr("src", data.result[i]["img_url"])
+            .attr("class", "card-img-top m-1")
+            .appendTo("#news_"+i)
+            $("<div>")
+              .attr("class", "card-body")
+              .attr("id", "news_card_"+i)
+              .appendTo("#news_"+i)
+              $("<h5>")
+                .attr("class", "card-title")
+                .text(data.result[i]["news_title"])
+                .appendTo("#news_card_"+i)
+              $("<a>")
+                .attr("class", "btn btn-outline-danger")
+                .attr("id", "news_button_"+i)
+                .attr("onclick", "summarize_news(this)")
+                .appendTo("#news_card_"+i)
         }
         ;
       });
       return false;
     });
   });
+
+  function summarize_news() {
+    const idNumb = event.srcElement.id
+    const idxNumb = idNumb.split("")[12]
+    const articleUrl = JSON.parse(localStorage.getItem("newsInfo"))[idxNumb]['article_url']
+
+    
+    const data ={'url':articleUrl}
+    
+    $.ajax({
+      url: '/news_summarize',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      dataType:'json',
+      success: function(data) {
+        console.log(data.summarized.content)
+      }
+    });    
+
+  };
+
 
   // 유튜브 검색 기능
   $(function() {
@@ -256,9 +271,12 @@
               .attr("class", "btn btn-outline-danger")
               .attr("id", "youtube_button_"+i)
               .attr("href", data.videos[i]["url"])
+              .attr("target", "_blank")
               .appendTo("#youtube_card_"+i)
               $("<i>")
                 .attr("class", "bi bi-youtube")
+                .attr("href", data.videos[i]["url"])
+                .attr("target", "_blank")
                 .appendTo("#youtube_button_"+i)
               $("<a>")
                 .attr("id", "telegram_"+i)
@@ -279,11 +297,8 @@
 
   function sendMessage() {
     const idNumb = event.srcElement.id
-    console.log(event.srcElement.id)
     const idxNumb = idNumb.split("")[9]
-    console.log(idxNumb)
     const youtubeUrl = JSON.parse(localStorage.getItem("youtubeInfo"))[idxNumb]['url']
-    console.log(youtubeUrl)
 
     const data ={'url':youtubeUrl}
     $.ajax({
@@ -299,9 +314,20 @@
   $(function(){
     $('a#search_stock').bind('click', function(){
       $("#collected_stock").html("");
+      $("#stock_news").html("");
       $.getJSON($SCRIPT_ROOT + '/stock_search', {
         search_word: $('input[name="stock_word"]').val()
       }, function(data) {
+        for (let i = 0; i < 5; i++) {
+          $("<li>")
+            .attr("id", "stock_news_"+i)
+            .appendTo("#stock_news")
+            $("<a>")
+              .text(data.stock_news[i]["제목"] + " / " + data.stock_news[i]["언론사"] + " / " + data.stock_news[i]["날짜"])
+              .attr("href", data.stock_news[i]["링크"])
+              .attr("target", "_blank")
+              .appendTo("#stock_news_"+i)
+        }
         $("<tr>")
           .attr("id", "table_header")
           .appendTo("#collected_stock")

@@ -22,25 +22,38 @@ def make_articles(text):
 
   check_list = []
   # Beautiful Soup로 기사 페이지에서 기사들 몇가지 링크 가져오기
-  for link in soup.find_all('a'):
+
+  news_titles = []
+  news_urls = []
+  news_thumbs = []
+
+  for link in soup.find_all('a', {'class' : 'news_tit'}):
     href = link.get('href')
     news_title = link.get('title')
     if news_title != None:
-      check_list.append({
-        'news_title' : news_title, 
-        'article_url' : href,
-        # 'img_url' : img_url,
-        })
+      news_titles.append(news_title)
+      news_urls.append(href)
     elif len(check_list) > 5:
       break 
 
+  thumbs = soup.find_all('img', {'class' : 'thumb api_get'})
+  for thumb in thumbs:
+    img_url = thumb.get('src')
+    news_thumbs.append(img_url)
+
+  for i in range(5):
+    check_list.append({
+      'news_title' : news_titles[i], 
+      'article_url' : news_urls[i],
+      'img_url' : news_thumbs[i],
+      })
+
   return check_list
 
-
 # 사용자가 선택한 뉴스를 요약
-def summarize_article(content):
+def summarize_article(article_url):
   # 기사들 링크를 newpaper 패키지를 통해 본문 뽑아오기
-  article = Article(content['article_url'], language='ko')
+  article = Article(article_url, language='ko')
   article.download()
   article.parse()
   content_summarize = summarize(article.text, word_count=50)

@@ -1,6 +1,10 @@
+from flask import request
 from pykrx import stock, bond
 from pprint import pprint
 import datetime as dt
+from bs4 import BeautifulSoup
+import requests
+import re
 
 # 종목 이름이랑 번호 bind해서 dict로 만들기 
 # 처음에만 돌려서 다음에는 작동하지 않고 참조만 하도록 
@@ -17,6 +21,7 @@ for ticker in tickers:
     })
 
 
+
 def search_stock(search_word):
     # 오늘 날짜 가져오기
     # YYYYMMDD
@@ -29,15 +34,8 @@ def search_stock(search_word):
         if target['name'] == search_word:
             target_numb = target['number']
 
-    # 삼성전자 번호
-    # target_numb = '005930'
-
     df = stock.get_market_ohlcv("20180810", today_date, target_numb, "d")
-    # 구분값 
-    # print(df.columns)
-    # # 날짜 정보 
-    # print(df.index[len(df)-7:len(df)])
-    # print(df.values[len(df)-7:len(df)][0])
+
 
     # 오늘부터 영업일 7일 전까지의 종목 거래 정보 
     stock_info = []
@@ -51,4 +49,47 @@ def search_stock(search_word):
             '거래량' : str(df.values[len(df)-1-i][4]),
         }
         stock_info.append(one_day)
-    return stock_info
+
+    url = f'https://finance.naver.com/item/news_news.nhn?code={target_numb}&page=1' 
+    source_code = requests.get(url).text
+    html = BeautifulSoup(source_code, "lxml")
+    
+    # 뉴스 제목 
+    titles = html.select('.title')
+    title_result=[]
+    for title in titles: 
+        title = title.get_text() 
+        title = re.sub('\n','',title)
+        title_result.append(title)
+
+
+    # 뉴스 링크
+    links = html.select('.title') 
+
+    link_result =[]
+    for link in links: 
+        add = 'https://finance.naver.com' + link.find('a')['href']
+        link_result.append(add)
+
+
+    # 뉴스 날짜 
+    dates = html.select('.date') 
+    date_result = [date.get_text() for date in dates] 
+
+
+    # 뉴스 매체     
+    sources = html.select('.info')
+    source_result = [source.get_text() for source in sources] 
+    
+    stock_news = []
+    for i in range(5):
+        one_news = {
+            '날짜' : date_result[i],
+            '제목' : title_result[i],
+            '언론사' : source_result[i],
+            '링크' : link_result[i],
+        }
+        stock_news.append(one_news)
+
+    return stock_info, stock_news
+
