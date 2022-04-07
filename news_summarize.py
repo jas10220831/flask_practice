@@ -8,7 +8,7 @@ from gensim.summarization import summarize
 from newspaper import Article
 from bs4 import BeautifulSoup
 import requests
-
+import re 
 
 
 NAVER_NEWS_URL = 'https://search.naver.com/search.naver?where=news&sm=tab_jum&query='
@@ -27,17 +27,15 @@ def make_articles(text):
   news_urls = []
   news_thumbs = []
 
-  for link in soup.find_all('a', {'class' : 'news_tit'}):
+
+  for link in soup.find_all('a', {'class' : 'news_tit'})[:5]:
     href = link.get('href')
     news_title = link.get('title')
-    if news_title != None:
-      news_titles.append(news_title)
-      news_urls.append(href)
-    elif len(check_list) > 5:
-      break 
+    news_urls.append(href)
+    news_titles.append(news_title)
 
   thumbs = soup.find_all('img', {'class' : 'thumb api_get'})
-  for thumb in thumbs:
+  for thumb in thumbs[:5]:
     img_url = thumb.get('src')
     news_thumbs.append(img_url)
 
@@ -47,8 +45,9 @@ def make_articles(text):
       'article_url' : news_urls[i],
       'img_url' : news_thumbs[i],
       })
-
   return check_list
+
+make_articles('한화이글스')
 
 # 사용자가 선택한 뉴스를 요약
 def summarize_article(article_url):
@@ -56,13 +55,17 @@ def summarize_article(article_url):
   article = Article(article_url, language='ko')
   article.download()
   article.parse()
-  content_summarize = summarize(article.text, word_count=50)
+  result = summarize(article.text, word_count=50)
   
+
+  content_summarize = ''
   # 요약이 아될 경우 그냥 본문 전달
-  if content_summarize:
-    return content_summarize
+  if result:
+    content_summarize = result
   else:
-    return article.text
+    content_summarize = article.text
+  
+  return content_summarize
 
 # article_list = make_articles('한화이글스')
 # # print(article_list)
@@ -72,4 +75,17 @@ def summarize_article(article_url):
 
 # print(word)
 
-# print(summarize_article(article_list[2]))
+# print(summarize_article('https://biz.chosun.com/policy/politics/2022/04/07/IMJSR6VV2VDAPJHHEB4ZAVQVFE/?utm_source=naver&utm_medium=original&utm_campaign=biz'))
+
+  # links = soup.find_all('div', {'class' : "news_wrap api_ani_send"})
+  # # links = soup.find_all(href=re.compile("https://news.naver.com/main/read.naver?"))
+  # for link in links[:5]:
+  #   if "네이버뉴스" in link.get_text() :
+  #     # print(link)
+  #     # print(type(link))
+  #     # print('-------------------------------------------')
+  #     little_soup = BeautifulSoup(str(link), 'html.parser')
+  #     naver_url = little_soup.find_all(href=re.compile("https://news.naver.com/main/read.naver?"))
+  #     news_title = little_soup.find_all('a', {'class' : 'news_tit'})
+  #     thumbs = little_soup.find_all('img', {'class' : 'thumb api_get'})
+  #     print(naver_url, news_title, thumbs)

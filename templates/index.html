@@ -103,7 +103,7 @@
         
         <section id="news">
           <div class="row featurette align-items-center">
-            <div class="col-3">
+            <div class="col-12">
               <h2 class="featurette-heading mt-4">뉴스<span class="text-muted"></h2>
               <form class="get_news" action="{{ url_for('news_list') }}" method="post">
                 <input name="search_word" class="search_word" id="message" type="text">
@@ -114,6 +114,8 @@
 
             </div>
             
+            <div id="summarzied_article" class="col">
+            </div>
             <!-- <div class="col-md-5 order-md-1">
               <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>  -->
           </div>
@@ -185,6 +187,7 @@
   $(function() {
     $('a#search_news').bind('click', function(){
       $("#collected_article").html("");
+      $("#summarized_article").html("");
       $.getJSON($SCRIPT_ROOT + '/news_list', {
         search_word: $('input[name="search_word"]').val()
       }, function(data){
@@ -207,34 +210,47 @@
                 .attr("class", "card-title")
                 .text(data.result[i]["news_title"])
                 .appendTo("#news_card_"+i)
+              
               $("<a>")
-                .attr("class", "btn btn-outline-danger")
+                .attr("class", "btn btn-outline-primary m-2")
                 .attr("id", "news_button_"+i)
-                .attr("onclick", "summarize_news(this)")
+                .attr("onclick", "send_news(this)")
                 .appendTo("#news_card_"+i)
-        }
-        ;
+                $("<i>")
+                  .attr("class", "bi bi-telegram")
+                  .attr("onclick", "send_news(this)")
+                  .attr("id", "news_telegran_"+i)
+                  .appendTo("#news_button_"+i)
+              $("<a>")
+                .attr("class", "btn btn-outline-success m-2")
+                .attr("id", "news_naver_"+i)
+                .attr("href", data.result[i]["article_url"])
+                .attr("target", "_blank")
+                .appendTo("#news_card_"+i)
+                $("<i>")
+                  .attr("class", "bi bi-newspaper")
+                  .appendTo("#news_naver_"+i)
+                }
       });
       return false;
     });
   });
 
-  function summarize_news() {
+  function send_news() {
     const idNumb = event.srcElement.id
     const idxNumb = idNumb.split("")[12]
     const articleUrl = JSON.parse(localStorage.getItem("newsInfo"))[idxNumb]['article_url']
-
     
     const data ={'url':articleUrl}
     
     $.ajax({
-      url: '/news_summarize',
+      url: '/news_summarize_send',
       type: 'POST',
       contentType: 'application/json',
       data: JSON.stringify(data),
       dataType:'json',
       success: function(data) {
-        console.log(data.summarized.content)
+        console.log(data)
       }
     });    
 

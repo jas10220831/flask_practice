@@ -19,9 +19,9 @@ app = Flask(__name__)
 TELEGRAM_TOKEN = config('TELEGRAM_TOKEN')
 WEBHOOK_URL = config('WEBHOOK_URL')
 YOUTBUE_KEY = config('YOUTUBE_KEY')
+chat_id = config('chat_id')
 bot_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
 
-chat_id = ''
 
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
@@ -31,7 +31,6 @@ def hello_world():
         response = request.get_json()
         chat_id = response['message']['chat']['id']
         message = request.get_json()['message']['text']
-        
         if message == '안녕':
            greeting(chat_id)
         else:
@@ -47,6 +46,16 @@ def news_list():
     search_word = request.args.get('search_word', 'None', type=str)
     articles = make_articles(search_word)
     return jsonify(result=articles)
+
+@app.route('/news_summarize_send', methods=['POST', 'GET'])
+def news_summarize_send():
+    article_url = request.json['url']
+    result = summarize_article(article_url)
+    data = {
+        'content' : result
+    }
+    send(result, chat_id)
+    return jsonify(summarized=data)
 
 @app.route('/news_summarize', methods=['POST', 'GET'])
 def news_summarize():
