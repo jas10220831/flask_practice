@@ -23,7 +23,7 @@ bot_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
     # print(WEBHOOK_URL)
-    # flag를 하나 만들어두고 채워질 떄 마다 시나리오 진행되도록 하자 
+    # flag를 하나 만들어두-고 채워질 떄 마다 시나리오 진행되도록 하자 
     if request.method == 'POST':
         response = request.get_json()
         chat_id = response['message']['chat']['id']
