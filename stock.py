@@ -82,7 +82,7 @@ def search_stock(search_word):
     source_result = [source.get_text() for source in sources] 
     
     stock_news = []
-    for i in range(5):
+    for i in range(8):
         one_news = {
             '날짜' : date_result[i],
             '제목' : title_result[i],

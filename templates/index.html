@@ -22,15 +22,37 @@
         user-select: none;
       }
 
+      
+      a {
+        text-decoration: none;
+      }
+      
       @media (min-width: 768px) {
         .bd-placeholder-img-lg {
           font-size: 3.5rem;
         }
       }
 
-      table, th, td {
-        border:1px solid black;
+      .styled-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
       }
+      
+      .styled-table #table_header > th {
+        background-color: #3cb6db;
+        color: #ffffff;
+        text-align: center;
+      }
+      .styled-table th,
+      .styled-table td {
+        text-align: center;
+        font-size: 14px;  
+      }
+
     </style>
 
     
@@ -77,14 +99,14 @@
               <rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
 
             <h2>뉴스</h2>
-            <p>검색어를 입력하면 네이버 뉴스에서 관련 기사를 검색하고 요약하는 기능 제공</p>
+            <p> 네이버 뉴스 검색 후 링크 및 요약본 전달</p>
             <p><a class="btn btn-secondary" href="#news">View details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
           <div class="col-lg-4">
             <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
 
             <h2>유튜브</h2>
-            <p>검색어를 유튜브를 통해 찾아보고 제공</p>
+            <p>유튜브 검색 및 링크 챗봇 전달</p>
             <p><a class="btn btn-secondary" href="#youtube">View details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
           <div class="col-lg-4">
@@ -126,6 +148,7 @@
           <div class="row featurette">
             <div class="col-12">
               <h2 class="featurette-heading mt-4">유튜브<span class="text-muted"></h2>
+              <rect width="100%" height="100%" fill="#eee"></rect>
               <form class="get_news mb-4" action="{{ url_for('youtube_search') }}" method="post">
                 <input name="youtube_word" class="youtube_word" id="youtube_word" type="text">
                 <a href=# id=search_youtube><button class="search_youtube">검색</button></a>              
@@ -151,9 +174,9 @@
             </div>
 
             <div  class="col d-flex justify-center">
-              <table id="collected_stock" style="width:100%">
+              <table id="collected_stock" style="width:100%" class="styled-table m-0">
               </table>
-              <ul id="stock_news">
+              <ul id="stock_news" class="align-content-center">
               </ul>
             </div>
             
@@ -250,7 +273,7 @@
       data: JSON.stringify(data),
       dataType:'json',
       success: function(data) {
-        console.log(data)
+
       }
     });    
 
@@ -291,7 +314,6 @@
               .appendTo("#youtube_card_"+i)
               $("<i>")
                 .attr("class", "bi bi-youtube")
-                .attr("href", data.videos[i]["url"])
                 .attr("target", "_blank")
                 .appendTo("#youtube_button_"+i)
               $("<a>")
@@ -301,7 +323,6 @@
                 .appendTo("#youtube_card_"+i)
                 $("<i>")
                   .attr("class", "bi bi-telegram")
-                  .attr("onclick", "sendMessage(this)")
                   .attr("id", "telegran_"+i)
                   .appendTo("#telegram_"+i)
           }
@@ -334,7 +355,7 @@
       $.getJSON($SCRIPT_ROOT + '/stock_search', {
         search_word: $('input[name="stock_word"]').val()
       }, function(data) {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 8; i++) {
           $("<li>")
             .attr("id", "stock_news_"+i)
             .appendTo("#stock_news")
@@ -346,6 +367,7 @@
         }
         $("<tr>")
           .attr("id", "table_header")
+          .attr("class", "text-align: center")
           .appendTo("#collected_stock")
           $("<th>")
             .text("날짜")

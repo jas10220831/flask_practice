@@ -7,12 +7,13 @@ from news_summarize import *
 TELEGRAM_TOKEN = config('TELEGRAM_TOKEN')
 WEBHOOK_URL = config('WEBHOOK_URL')
 bot_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
-
+chat_id = config('chat_id')
 
 def send(text, chat_id):
   send_url = f'{bot_url}sendMessage?text={text}&chat_id={chat_id}'
   requests.get(send_url)
   return 
+
 
 def greeting(chat_id):
     text = "안녕하세요 \n 검색어를 입려해주세요 "

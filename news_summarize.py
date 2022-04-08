@@ -55,13 +55,12 @@ def summarize_article(article_url):
   article = Article(article_url, language='ko')
   article.download()
   article.parse()
-  result = summarize(article.text, word_count=50)
+  result = summarize(article.text, word_count=50, split=True)
   
-
   content_summarize = ''
   # 요약이 아될 경우 그냥 본문 전달
   if result:
-    content_summarize = result
+    content_summarize = "'\n\n'".join(result)
   else:
     content_summarize = article.text
   
