@@ -8,7 +8,6 @@ from gensim.summarization import summarize
 from newspaper import Article
 from bs4 import BeautifulSoup
 import requests
-import re 
 
 
 NAVER_NEWS_URL = 'https://search.naver.com/search.naver?where=news&sm=tab_jum&query='
@@ -46,8 +45,6 @@ def make_articles(text):
       'img_url' : news_thumbs[i],
       })
   return check_list
-
-make_articles('한화이글스')
 
 # 사용자가 선택한 뉴스를 요약
 def summarize_article(article_url):

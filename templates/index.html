@@ -214,6 +214,7 @@
       $.getJSON($SCRIPT_ROOT + '/news_list', {
         search_word: $('input[name="search_word"]').val()
       }, function(data){
+        $("#message").val("");
         localStorage.setItem("newsInfo", JSON.stringify(data.result))
         for (let i = 0; i < 5; i++){
           $("<div>")
@@ -287,6 +288,7 @@
       $.getJSON($SCRIPT_ROOT + '/youtube_search', {
         search_word: $('input[name="youtube_word"]').val()
       },function(data){
+        $("#youtube_word").val("");
         localStorage.setItem("youtubeInfo", JSON.stringify(data.videos))
         for (let i = 0; i < 5; i++){
           $("<div>")
@@ -355,6 +357,7 @@
       $.getJSON($SCRIPT_ROOT + '/stock_search', {
         search_word: $('input[name="stock_word"]').val()
       }, function(data) {
+        $("#stock_word").val("");
         for (let i = 0; i < 8; i++) {
           $("<li>")
             .attr("id", "stock_news_"+i)

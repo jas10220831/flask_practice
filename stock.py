@@ -9,7 +9,7 @@ import re
 # 종목 이름이랑 번호 bind해서 dict로 만들기 
 # 처음에만 돌려서 다음에는 작동하지 않고 참조만 하도록 
 
-tickers = stock.get_market_ticker_list()
+tickers = stock.get_market_ticker_list(market='ALL')
 
 stock_list = []
 

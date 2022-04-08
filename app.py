@@ -1,13 +1,10 @@
-from re import search
 from flask import (Flask,
      redirect, render_template, request, url_for,
-     jsonify, json
+     jsonify
      
      )
 from decouple import config
 
-import requests
-from pprint import pprint
 
 from send_message import *
 from news_summarize import * 
@@ -57,14 +54,6 @@ def news_summarize_send():
     send(result, chat_id)
     return jsonify(summarized=data)
 
-@app.route('/news_summarize', methods=['POST', 'GET'])
-def news_summarize():
-    article_url = request.json['url']
-    result = summarize_article(article_url)
-    data = {
-        'content' : result
-    }
-    return jsonify(summarized=data)
 
 @app.route('/youtube_search', methods=['GET', 'POST'])
 def youtube_search():
