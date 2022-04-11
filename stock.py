@@ -12,9 +12,11 @@ import re
 tickers = stock.get_market_ticker_list(market='ALL')
 
 stock_list = []
+stock_name_list = []
 
 for ticker in tickers:
     stock_name = stock.get_market_ticker_name(ticker)
+    stock_name_list.append(stock_name)
     stock_list.append({
         'name' : stock_name,
         'number' : ticker,
@@ -93,3 +95,6 @@ def search_stock(search_word):
 
     return stock_info, stock_news
 
+
+def stock_w2v(stock_name):
+    pass 
