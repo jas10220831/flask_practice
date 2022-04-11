@@ -1,9 +1,8 @@
-from importlib import import_module
 import telepot
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardMarkup as MU
 from telepot.namedtuple import InlineKeyboardButton as BT
-                                
+
                                 
 from decouple import config
 from pprint import pprint
@@ -20,6 +19,7 @@ bot = telepot.Bot(TELEGRAM_TOKEN)
 # 현재 어떤 기능 제공 중인지 알려주기 
 now_flag = {'state': None, 'stage':None}
 
+bot.sendMessage(chat_id, text="'시작'을 입력하여 기능 동작")
 
 def btn_show(msg):
     global now_flag
@@ -31,7 +31,7 @@ def btn_show(msg):
             btn2 = BT(text = "뉴스", callback_data = "뉴스")
             cancel_btn = BT(text='Cancel', callback_data="cancel")
             mu = MU(inline_keyboard = [[btn1, btn2], [cancel_btn]])
-            bot.sendMessage(chat_id, "선택하세요", reply_markup = mu)
+            bot.sendMessage(chat_id, "원하시는 기능을 선택하세요", reply_markup = mu)
         
     elif now_flag['state'] == '주식':
         # callback_data로 주식 종목을 전달한다. 
@@ -43,6 +43,8 @@ def btn_show(msg):
             cancel_btn = BT(text='Cancel', callback_data="cancel")
             mu = MU(inline_keyboard = [[btn1, btn2], [cancel_btn]])
             bot.sendMessage(chat_id, "원하는 기능을 선택하세요", reply_markup = mu)
+        
+        # TODO word2vec 통해서 종목간 유사도 검사하여 보내주기 
         else: # 없을 경우 대체 값 보내주기 
             bot.sendMessage(chat_id, "해당 종목이 없습니다")
     
@@ -90,9 +92,9 @@ def query_ans(msg):
 
         stock_info, stock_news = search_stock(target_stock)
         # 주식 가격 변동 조회기능
-        # TODO 테이블 형태 css 먹여서 보내기
+        # TODO 보기 쉽게 바꾸기
+        price_result=''
         if query_data[0] == "가격":
-            price_result = ''
             for info in stock_info:
                 price_result += '날짜: ' + info['날짜'] + ' '
                 price_result += '시가: ' + info['시가'] + ' '
@@ -101,7 +103,7 @@ def query_ans(msg):
                 price_result += '종가: ' + info['종가'] + ' '
                 price_result += '\n'
             bot.sendMessage(chat_id, text=f"{target_stock}의 7영업일 주가 변동")
-            bot.sendMessage(chat_id, price_result)
+            bot.sendMessage(chat_id, price_result )
 
         # 주식 관련 뉴스 조회 기능
         elif query_data[0] =="뉴스":
