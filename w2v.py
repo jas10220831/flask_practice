@@ -1,22 +1,37 @@
-from tabnanny import check
-import warnings
+from sentence_transformers import SentenceTransformer, util
+import csv
+import torch
 
-from numpy import newaxis
+f = open('stock_name.csv', 'r')
+stock_name = csv.reader(f)
+stock_name = list(stock_name)
+stock_name = stock_name[0]
+f.close()
 
-from gensim.models import Word2Vec, fasttext
-from pykrx import stock
+model = SentenceTransformer('distiluse-base-multilingual-cased-v1')
 
-tickers = stock.get_market_ticker_list(market='ALL')
+embeddings = model.encode(stock_name, convert_to_tensor=True)
+# cosine_scores = util.cos_sim(embeddings, embeddings
 
-stock_names = []
+def search_similar_stock(word):
+    new_embed = model.encode([word], convert_to_tensor=True)
+    cosine_scores = util.cos_sim(new_embed, embeddings)
 
-for ticker in tickers:
-    stock_name = stock.get_market_ticker_name(ticker)
-    stock_names.append(stock_name)
+    score = cosine_scores[0].tolist()
 
-model = Word2Vec(sentences=stock_names, size=100, window=5, min_count=1, workers=2, sg=0)
-model_result = model.wv.most_similar("삼성전자")
-print(model_result)
+    result = []
+    for i in range(len(score)-1):
+        result.append({
+            'name' : stock_name[i],
+            'score' : score[i]
+        })
+        
 
+    result = sorted(result, key=lambda x: x['score'], reverse=True)
 
+    name_list = []
+    for stock in result[:10]:
+        name_list.append(stock['name'])
+
+    return name_list
 

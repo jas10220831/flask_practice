@@ -5,6 +5,8 @@ from flask import (Flask,
      )
 from decouple import config
 
+import telepot
+
 
 from send_message import *
 from news_summarize import * 
@@ -18,24 +20,14 @@ WEBHOOK_URL = config('WEBHOOK_URL')
 YOUTBUE_KEY = config('YOUTUBE_KEY')
 chat_id = config('chat_id')
 bot_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
+bot = telepot.Bot(TELEGRAM_TOKEN)
+
 
 
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
     # print(WEBHOOK_URL)
-    # flag를 하나 만들어두-고 채워질 떄 마다 시나리오 진행되도록 하자 
-    if request.method == 'POST':
-        response = request.get_json()
-        chat_id = response['message']['chat']['id']
-        message = request.get_json()['message']['text']
-        if message == '안녕':
-           greeting(chat_id)
-        else:
-            article_list = make_articles(message)
-            send_title(article_list, chat_id)
-
-        return '', 200
-    else:
+# flag를 하나 만들어두-고 채워질 떄 마다 시나리오 진행되도록 하자 
         return render_template('index.html')
 
 @app.route('/news_list', methods=['GET', 'POST'])
@@ -51,7 +43,9 @@ def news_summarize_send():
     data = {
         'content' : result
     }
-    send(result, chat_id)
+    # send(result, chat_id)
+    bot.sendMessage(chat_id, text=result)
+
     return jsonify(summarized=data)
 
 
@@ -67,7 +61,8 @@ def youtube_search():
 @app.route('/youtbe_send_telegram', methods=['GET', 'POST'])
 def youtbe_send_telegram():
     send_url = request.json['url']
-    send(send_url, chat_id)
+    bot.sendMessage(chat_id, text=send_url)
+
     return '데이터 받음'
 
 @app.route('/stock_search', methods=['GET', 'POST'])

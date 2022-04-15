@@ -10,6 +10,8 @@ import time
 
 from stock import *
 from news_summarize import * 
+from w2v import *
+
 
 TELEGRAM_TOKEN = config('TELEGRAM_TOKEN')
 chat_id = config('chat_id')
@@ -20,6 +22,15 @@ bot = telepot.Bot(TELEGRAM_TOKEN)
 now_flag = {'state': None, 'stage':None}
 
 bot.sendMessage(chat_id, text="'시작'을 입력하여 기능 동작")
+
+def make_stock_mu(target_stock):
+    btn1 = BT(text = "가격 변동 조회", callback_data = f"가격,{target_stock}")
+    btn2 = BT(text = "관련 뉴스 조회", callback_data = f"뉴스,{target_stock}")
+    cancel_btn = BT(text='Cancel', callback_data="cancel")
+    mu = MU(inline_keyboard = [[btn1, btn2], [cancel_btn]])
+
+    return mu
+
 
 def btn_show(msg):
     global now_flag
@@ -38,16 +49,32 @@ def btn_show(msg):
         target_stock = msg['text']
         # 주식 리스트에 있을 경우 결과값 보내주기
         if target_stock in stock_name_list:
-            btn1 = BT(text = "가격 변동 조회", callback_data = f"가격,{target_stock}")
-            btn2 = BT(text = "관련 뉴스 조회", callback_data = f"뉴스,{target_stock}")
-            cancel_btn = BT(text='Cancel', callback_data="cancel")
-            mu = MU(inline_keyboard = [[btn1, btn2], [cancel_btn]])
+            # flag 상태를 주식이름이 있다고 표시한다.
+            now_flag['stage'] = True
+            # 개별 주식의 버튼을 만들어서 보낸다. 
+            mu = make_stock_mu(target_stock)
             bot.sendMessage(chat_id, "원하는 기능을 선택하세요", reply_markup = mu)
         
         # TODO word2vec 통해서 종목간 유사도 검사하여 보내주기 
         else: # 없을 경우 대체 값 보내주기 
-            bot.sendMessage(chat_id, "해당 종목이 없습니다")
-    
+            # flag 상태는 주식없다고 표시
+            now_flag['stage'] = False
+            simliar_list = search_similar_stock(target_stock)
+
+            bot.sendMessage(chat_id, "해당 종목이 없습니다 \n 유사 종목을 보여드립니다.")
+            sim_keyboard = []
+            for idx in range(0,10,2):
+                temp_keyboard = []
+                temp_keyboard.append(BT(text = simliar_list[idx], callback_data = f"주식,{simliar_list[idx]}"))
+                temp_keyboard.append(BT(text = simliar_list[idx+1], callback_data = f"주식,{simliar_list[idx+1]}"))
+                sim_keyboard.append(temp_keyboard)
+
+            cancel_btn = BT(text='Cancel', callback_data="cancel")
+            sim_keyboard.append([cancel_btn])
+            mu = MU(inline_keyboard = sim_keyboard)
+            bot.sendMessage(chat_id, "원하는 종목을 선택하시거나 \n 다시 종목을 입력해주세요", reply_markup = mu)
+        
+            
     # 뉴스 기능 선택시 제목을 5가지 보여주고 선택
     elif now_flag['state'] == '뉴스':
         target_word = msg['text']
@@ -89,8 +116,15 @@ def query_ans(msg):
     elif now_flag['state'] == '주식':
         query_data = query_data.split(',')
         target_stock = query_data[1]
+        print(query_data)
+        
+        # 추천 주식종목을 선택했다 => stage 변경 
+        if not now_flag['stage']:
+            mu = make_stock_mu(target_stock)
+            bot.sendMessage(chat_id, "원하는 기능을 선택하세요", reply_markup = mu)
+            now_flag['stage'] = True
 
-        stock_info, stock_news = search_stock(target_stock)
+        stock_info, stock_news, is_stocked_in = search_stock(target_stock)
         # 주식 가격 변동 조회기능
         # TODO 보기 쉽게 바꾸기
         price_result=''

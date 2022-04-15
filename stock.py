@@ -5,6 +5,7 @@ import datetime as dt
 from bs4 import BeautifulSoup
 import requests
 import re
+from w2v import search_similar_stock
 
 # 종목 이름이랑 번호 bind해서 dict로 만들기 
 # 처음에만 돌려서 다음에는 작동하지 않고 참조만 하도록 
@@ -23,7 +24,6 @@ for ticker in tickers:
     })
 
 
-
 def search_stock(search_word):
     # 오늘 날짜 가져오기
     # YYYYMMDD
@@ -31,16 +31,29 @@ def search_stock(search_word):
 
     # 검색 종목의 종목번호
     target_numb = ''
+    # 가격 정보 저장 
+    stock_info = []
+    # 뉴스 정보 저장 
+    stock_news = []
+    # 종목이 있는지 없는지 확인
+    is_stock_in = ''
 
-    for target in stock_list:
-        if target['name'] == search_word:
-            target_numb = target['number']
+    # 검색 종목이 있는지 없는지 확인 
+    if search_word in stock_name_list:
+        for target in stock_list:
+            if target['name'] == search_word:
+                target_numb = target['number']
+                is_stock_in = True
+                break
+    else: # 없을 경우 sbert 활용 후보값 반환  
+        is_stock_in = False
+        stock_info = search_similar_stock(search_word)
+        return stock_info, stock_news, is_stock_in
 
     df = stock.get_market_ohlcv("20180810", today_date, target_numb, "d")
 
 
     # 오늘부터 영업일 7일 전까지의 종목 거래 정보 
-    stock_info = []
     for i in range(7):
         one_day = {
             '날짜' : df.index[len(df)-1-i].strftime("%Y/%m/%d"),
@@ -83,7 +96,6 @@ def search_stock(search_word):
     sources = html.select('.info')
     source_result = [source.get_text() for source in sources] 
     
-    stock_news = []
     for i in range(8):
         one_news = {
             '날짜' : date_result[i],
@@ -93,8 +105,6 @@ def search_stock(search_word):
         }
         stock_news.append(one_news)
 
-    return stock_info, stock_news
+    return stock_info, stock_news, is_stock_in
 
 
-def stock_w2v(stock_name):
-    pass 
